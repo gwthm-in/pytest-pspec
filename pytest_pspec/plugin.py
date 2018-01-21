@@ -10,11 +10,11 @@ from . import models, wrappers
 def pytest_addoption(parser):
     group = parser.getgroup('terminal reporting', 'reporting', after='general')
     group.addoption(
-        '--testdox', action='store_true', dest='testdox', default=False,
-        help='Report test progress in testdox format'
+        '--pspec', action='store_true', dest='pspec', default=False,
+        help='Report test progress in pspec format'
     )
     parser.addini(
-        'testdox_format',
+        'pspec_format',
         help='TestDox report format (plaintext|utf8)',
         default='utf8'
     )
@@ -22,12 +22,12 @@ def pytest_addoption(parser):
 
 @pytest.mark.trylast
 def pytest_configure(config):
-    if config.option.testdox:
+    if config.option.pspec:
         # Get the standard terminal reporter plugin and replace it with ours
         standard_reporter = config.pluginmanager.getplugin('terminalreporter')
-        testdox_reporter = TestdoxTerminalReporter(standard_reporter.config)
+        pspec_reporter = TestdoxTerminalReporter(standard_reporter.config)
         config.pluginmanager.unregister(standard_reporter)
-        config.pluginmanager.register(testdox_reporter, 'terminalreporter')
+        config.pluginmanager.register(pspec_reporter, 'terminalreporter')
 
 
 class TestdoxTerminalReporter(TerminalReporter):
@@ -42,7 +42,7 @@ class TestdoxTerminalReporter(TerminalReporter):
         )
         self.result_wrappers = []
 
-        if config.getini('testdox_format') != 'plaintext':
+        if config.getini('pspec_format') != 'plaintext':
             self.result_wrappers.append(wrappers.UTF8Wrapper)
 
         if config.option.color != 'no':
