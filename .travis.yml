@@ -1,0 +1,25 @@
+language: python
+python:
+- 2.7
+- 3.5
+- 3.6
+cache:
+  directories:
+  - $HOME/.cache/pip
+before_install:
+- pip install codecov
+install:
+- make install
+script:
+- make check test
+after_success:
+- codecov
+deploy:
+  provider: pypi
+  user: gowtham-sai
+  distributions: sdist bdist_wheel
+  password:
+    secure: R0+KFfD7qYBqskeYkS/Euh4kzrCgniCgfqV6f+A56/rYyG+zM22OtB+BZRTMwXL5jdQorQ0dSNW+l225WYaTVHq4ZnrzGXvxGgNLuwX2Cv3rR3gGW9M+XAHJ3ckB3Hl9/favMxTRKYY3vucm4t9uAUPx8XJ3H5mAzg5EtJ3gIyqOOKfxnf0+WHt1gPOw1YZkcD/XM8i64Z3PLgYF+hxeM3cZjRcRc5A0/DhpLwPmPzwiHD+As9oZvzH9KPpoPxn9TZmekUCHt6YRIj8t3aCQbCfxcXO14PuRm0FqeN2Pof9ktdfYmrIz3py6NpYNLAxd79KP5ze+wc0tzFENmnx7uNZpib/JmkMkMQsSrt6kMCe2U3KZC7iCIo+5zbDqrp5/sM3Mx8fh2qjsECKZRAMalXVUKFKB0LNoJq6UKhquJ323UA0KIOavSAdoeAtFSE+A0PBxzhwy/iayRZitF4jW/cxUT8PXHld4L8gpKILJTOz77MRC2IeJYrLxjl1Ix0vv8uF6iS/tIwYTkrJajecSzbrCtSR/oIlnjULEevivuhwdHT5oXaBPoCydBHqayrzEZ22rLPCGKEuTJSrJNIY2TIo4alA7crBJ0iM6T+tPzbQYmF7fs6ZD7FXSvBCU90J8CGNZWuE4i9/8/QXIOzjhHiTuWppHWvjWnLjTWyFswfo=
+  on:
+    tags: true
+    repo: gowtham-sai/pytest-pspec
