@@ -11,7 +11,7 @@ A `pspec format`_ reporter for pytest
 
 .. _pspec format: https://en.wikipedia.org/wiki/RSpec
 
-.. image:: http://i.imgur.com/rJRL4x9.png
+.. image:: https://i.imgur.com/mwA9SRN.png
 
 Install
 -------
@@ -40,6 +40,35 @@ in your `ini file <https://docs.pytest.org/en/latest/customize.html#initializati
     # (or tox.ini or setup.cfg)
     [pytest]
     addopts = --pspec
+
+
+Demo Code
+---------
+
+Add the doc strings Ex:
+
+.. code-block:: python
+
+    import unittest
+
+    class TestWayTwo(unittest.TestCase):
+        "Pspec Python TDD"
+
+        def test_should_add(self):
+            "it adds two integers and returns integer"
+            self.assertEqual(2+2, 4)
+
+        def test_should_find_difference_between_integers(self):
+            self.assertEqual(4-2, 2)
+
+running ``pytest --pspec`` outputs
+
+.. code-block::
+
+    demo
+     ✓ it adds two integers and returns integer
+     ✓ should find difference between integers
+
 
 
 Configuration file options
