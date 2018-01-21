@@ -128,3 +128,26 @@ class TestReport(object):
 
         lines = result.stdout.get_lines_after('Test')
         assert '✓ runs' in lines[0]
+
+    def test_should_print_doc_string_if_present(self, testdir):
+        testdir.makepyfile("""
+            def test_a_feature_is_working():
+                "test must return as header"
+                assert True
+        """)
+
+        result = testdir.runpytest('--pspec')
+
+        expected = '\033[92m ✓ must return as header\033[0m'
+        assert expected in result.stdout.str()
+
+    def test_should_print_func_name_if_doc_is_not_present(self, testdir):
+        testdir.makepyfile("""
+            def test_a_feature_is_working():
+                assert True
+        """)
+
+        result = testdir.runpytest('--pspec')
+
+        expected = '\033[92m ✓ a feature is working\033[0m'
+        assert expected in result.stdout.str()

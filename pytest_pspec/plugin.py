@@ -29,6 +29,13 @@ def pytest_configure(config):
         config.pluginmanager.unregister(standard_reporter)
         config.pluginmanager.register(pspec_reporter, 'terminalreporter')
 
+def pytest_collection_modifyitems(config, items):
+    for item in items:
+        node = item.obj
+        nodeid_parts = item.nodeid.split('::')
+        suf = node.__doc__.strip() if node.__doc__ else node.__name__
+        nodeid_parts[-1] = suf or nodeid_parts[-1]
+        item._nodeid = '::'.join(nodeid_parts)
 
 class TestdoxTerminalReporter(TerminalReporter):
 
