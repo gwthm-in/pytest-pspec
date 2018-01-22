@@ -24,7 +24,6 @@ setup(
         'pytest>=3.0.0',
         'six>=1.11.0',
     ],
-    scripts = ['bin/pspec'],
     packages=['pytest_pspec'],
     classifiers=[
         'Development Status :: 4 - Beta',
