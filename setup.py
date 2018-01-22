@@ -13,7 +13,7 @@ def read(fname):
 
 setup(
     name='pytest-pspec',
-    version='0.0.1',
+    version='0.0.2',
     description='A rspec format reporter for Python ptest',
     long_description=read('README.rst'),
     author='Gowtham Sai',
@@ -24,6 +24,7 @@ setup(
         'pytest>=3.0.0',
         'six>=1.11.0',
     ],
+    scripts=['bin/pspec'],
     packages=['pytest_pspec'],
     classifiers=[
         'Development Status :: 4 - Beta',
