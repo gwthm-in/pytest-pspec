@@ -15,7 +15,7 @@ def pytest_addoption(parser):
     )
     parser.addini(
         'pspec_format',
-        help='TestDox report format (plaintext|utf8)',
+        help='pspec report format (plaintext|utf8)',
         default='utf8'
     )
 
@@ -25,7 +25,7 @@ def pytest_configure(config):
     if config.option.pspec:
         # Get the standard terminal reporter plugin and replace it with ours
         standard_reporter = config.pluginmanager.getplugin('terminalreporter')
-        pspec_reporter = TestdoxTerminalReporter(standard_reporter.config)
+        pspec_reporter = PspecTerminalReporter(standard_reporter.config)
         config.pluginmanager.unregister(standard_reporter)
         config.pluginmanager.register(pspec_reporter, 'terminalreporter')
 
@@ -42,7 +42,7 @@ def pytest_collection_modifyitems(config, items):
         item._nodeid = '::'.join(nodeid_parts)
 
 
-class TestdoxTerminalReporter(TerminalReporter):
+class PspecTerminalReporter(TerminalReporter):
 
     def __init__(self, config, file=None):
         TerminalReporter.__init__(self, config, file)
