@@ -33,9 +33,12 @@ def pytest_configure(config):
 def pytest_collection_modifyitems(config, items):
     for item in items:
         node = item.obj
+        parent = item.parent.obj
         nodeid_parts = item.nodeid.split('::')
-        suf = node.__doc__.strip() if node.__doc__ else node.__name__
-        nodeid_parts[-1] = suf or nodeid_parts[-1]
+        if node.__doc__:
+            nodeid_parts[-1] = node.__doc__.strip()
+        if parent.__doc__:
+            nodeid_parts[-2] = parent.__doc__.strip()
         item._nodeid = '::'.join(nodeid_parts)
 
 

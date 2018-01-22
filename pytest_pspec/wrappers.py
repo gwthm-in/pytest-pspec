@@ -24,7 +24,7 @@ class ColorWrapper(Wrapper):
         color = self._COLOR_BY_OUTCOME.get(self.wrapped.outcome, '')
         reset = self._color_reset if color else ''
 
-        return '{color}{result}{reset}'.format(
+        return '  {color}{result}{reset}'.format(
             color=color,
             result=self.wrapped,
             reset=reset
@@ -46,7 +46,7 @@ class UTF8Wrapper(Wrapper):
             self.wrapped.outcome,
             self._default_character
         )
-        return ' {outcome} {node}'.format(
+        return '  {outcome} {node}'.format(
             outcome=outcome,
             node=self.wrapped.node
         )

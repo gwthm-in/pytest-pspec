@@ -41,12 +41,8 @@ class Node(object):
             pattern_config.files
         )
 
-        class_name = node_parts[-2]
-        if '()' not in class_name:
-            class_name = None
-        else:
-            class_name = formatters.format_class_name(
-                node_parts[-3],
+        class_name = formatters.format_class_name(
+                node_parts[-2],
                 pattern_config.classes
             )
 
@@ -80,7 +76,7 @@ class Result(object):
             self._default_outcome_representation
         )
 
-        line = ' {outcome_representation} {node}'.format(
+        line = '  {outcome_representation} {node}'.format(
             outcome_representation=representation,
             node=self.node
         )
