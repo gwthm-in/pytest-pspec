@@ -11,7 +11,7 @@ A `pspec format`_ reporter for pytest
 
 .. _pspec format: https://en.wikipedia.org/wiki/RSpec
 
-.. image:: https://i.imgur.com/mwA9SRN.png
+.. image:: https://i.imgur.com/cCMJXHe.png
 
 Install
 -------
