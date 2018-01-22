@@ -12,12 +12,15 @@ def format_class_name(class_name, patterns):
     formatted = ''
 
     class_name = _remove_patterns(class_name, patterns)
+    if ' ' not in class_name:
+        for index, letter in enumerate(class_name):
+            if letter.isupper() and \
+                    _has_lower_letter_besides(index, class_name):
+                formatted += ' '
 
-    for index, letter in enumerate(class_name):
-        if letter.isupper() and _has_lower_letter_besides(index, class_name):
-            formatted += ' '
-
-        formatted += letter
+            formatted += letter
+    else:
+        formatted = class_name
 
     return formatted.strip()
 

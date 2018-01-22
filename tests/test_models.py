@@ -40,7 +40,7 @@ class TestNode(object):
         )
 
     @pytest.mark.parametrize('nodeid,class_name', (
-        ('tests/test_module.py::test_title', None),
+        ('tests/test_module.py::::test_title', ''),
         (
             'tests/test_module.py::TestClassName::()::test_title',
             formatters.format_class_name('TestClassName', ['Test*'])

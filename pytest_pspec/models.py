@@ -40,15 +40,10 @@ class Node(object):
             node_parts[0],
             pattern_config.files
         )
-
-        class_name = node_parts[-2]
-        if '()' not in class_name:
-            class_name = None
-        else:
-            class_name = formatters.format_class_name(
-                node_parts[-3],
-                pattern_config.classes
-            )
+        class_name = formatters.format_class_name(
+            node_parts[1],
+            pattern_config.classes
+        )
 
         return cls(title=title, class_name=class_name, module_name=module_name)
 

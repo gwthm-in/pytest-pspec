@@ -151,3 +151,18 @@ class TestReport(object):
 
         expected = '\033[92m ✓ a feature is working\033[0m'
         assert expected in result.stdout.str()
+
+    def test_should_print_class_name_if_doc_is_present(self, testdir):
+        "This is doc"
+
+        testdir.makepyfile("""
+            class TestBar(object):
+                "This is PySpec Class"
+                def test_a_feature_is_working(self):
+                    assert True
+        """)
+
+        result = testdir.runpytest('--pspec')
+
+        expected = 'This is PySpec Class'
+        assert expected in result.stdout.str()

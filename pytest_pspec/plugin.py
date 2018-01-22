@@ -34,12 +34,18 @@ def pytest_collection_modifyitems(config, items):
     for item in items:
         node = item.obj
         parent = item.parent.obj
-        nodeid_parts = item.nodeid.split('::')
-        if node.__doc__:
-            nodeid_parts[-1] = node.__doc__.strip()
-        if parent.__doc__:
-            nodeid_parts[-2] = parent.__doc__.strip()
-        item._nodeid = '::'.join(nodeid_parts)
+        node_parts = item.nodeid.split('::')
+        node_str = node.__doc__ or node_parts[-1]
+        mode_str = node_parts[0]
+        klas_str = ''
+        node_parts_length = len(node_parts)
+
+        if node_parts_length > 3:
+            klas_str = parent.__doc__ or node_parts[-3]
+        elif node_parts_length > 2:
+            klas_str = parent.__doc__ or node_parts[-2]
+
+        item._nodeid = '::'.join([mode_str, klas_str, node_str])
 
 
 class PspecTerminalReporter(TerminalReporter):
