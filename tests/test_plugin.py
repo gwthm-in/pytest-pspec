@@ -153,10 +153,24 @@ class TestReport(object):
         assert expected in result.stdout.str()
 
     def test_should_print_class_name_if_doc_is_present(self, testdir):
+        testdir.makepyfile("""
+            class TestBar(object):
+                "This is PySpec Class"
+                def test_a_feature_is_working(self):
+                    assert True
+        """)
+
+        result = testdir.runpytest('--pspec')
+
+        expected = 'This is PySpec Class'
+        assert expected in result.stdout.str()
+
+    def test_should_print_class_name_if_node_length_gt_two(self, testdir):
         "This is doc"
 
         testdir.makepyfile("""
-            class TestBar(object):
+            import unittest
+            class TestBar(unittest.TestCase):
                 "This is PySpec Class"
                 def test_a_feature_is_working(self):
                     assert True
