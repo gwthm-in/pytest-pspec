@@ -74,7 +74,7 @@ class PspecTerminalReporter(TerminalReporter):
         Originally from:
         https://github.com/pytest-dev/pytest/blob/47a2a77/_pytest/terminal.py#L198-L201
         """
-        res = self.config.hook.pytest_report_teststatus(report=report)
+        res = self.config.hook.pytest_report_teststatus(report=report, config=self.config)
         category = res[0]
         self.stats.setdefault(category, []).append(report)
         self._tests_ran = True
