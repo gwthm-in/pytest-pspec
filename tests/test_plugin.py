@@ -24,6 +24,17 @@ class TestReport(object):
         expected = '\033[92m ✓ a feature is working\033[0m'
         assert expected in result.stdout.str()
 
+    def test_should_not_modify_nodeid_when_disabled_test(self, testdir):
+        testdir.makepyfile("""
+            def test_a_feature_is_working():
+                assert True
+        """)
+
+        result = testdir.runpytest('-v')
+
+        expected = 'test_should_not_modify_nodeid_when_disabled_test.py::test_a_feature_is_working'
+        assert expected in result.stdout.str()
+
     def test_should_print_a_red_failing_test(self, testdir):
         testdir.makepyfile("""
             def test_a_failed_test_of_a_feature():
