@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import pytest
+from _pytest.config import ExitCode
 
 
 class TestReport(object):
@@ -180,3 +181,39 @@ class TestReport(object):
 
         expected = 'This is PySpec Class'
         assert expected in result.stdout.str()
+
+    def test_parametrization_succeeds(self, testdir):
+        testdir.makepyfile("""
+            import pytest
+            @pytest.mark.parametrize("test_input, expected", [
+                ("3 + 5", 8),
+                ("2 + 4", 6),
+                ("6 * 9", 42),
+            ])
+            def test_math(test_input, expected):
+                '''Checking if {test_input} = {expected}...'''
+                assert eval(test_input) == expected
+        """)
+
+        result = testdir.runpytest('--pspec')
+
+        expected = "3 + 5 = 8"
+        assert expected in result.stdout.str()
+
+    def test_parametrization_keyerrors(self, testdir):
+        testdir.makepyfile("""
+            import pytest
+            @pytest.mark.parametrize("test_input, expected", [
+                ("3 + 5", 8),
+                ("2 + 4", 6),
+                ("6 * 9", 42),
+            ])
+            def test_math(test_input, expected):
+                '''Checking if {missing_key} = {expected}...'''
+                assert eval(test_input) == expected
+        """)
+
+        result = testdir.runpytest('--pspec')
+
+        assert result.ret == ExitCode.INTERNAL_ERROR
+        assert "INTERNALERROR> KeyError: 'missing_key'" in result.stdout.lines
