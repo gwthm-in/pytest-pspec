@@ -36,6 +36,10 @@ def pytest_collection_modifyitems(config, items):
         parent = item.parent.obj
         node_parts = item.nodeid.split('::')
         node_str = node.__doc__ or node_parts[-1]
+
+        if hasattr(item, "callspec"):
+            node_str = node_str.format(**item.callspec.params)
+
         mode_str = node_parts[0]
         klas_str = ''
         node_parts_length = len(node_parts)
