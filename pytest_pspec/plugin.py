@@ -31,6 +31,9 @@ def pytest_configure(config):
 
 
 def pytest_collection_modifyitems(config, items):
+    if not config.option.pspec:
+        return
+    
     for item in items:
         node = item.obj
         parent = item.parent.obj
