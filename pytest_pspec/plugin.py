@@ -39,7 +39,7 @@ def _format_parametrized_test_name(function_name, callspec):
         callspec: The pytest callspec object containing parameters
         
     Returns:
-        A formatted string like 'math with test_input=3 + 5, expected=8'
+        A formatted string like 'math with test input=3 + 5, expected=8'
     """
     # Remove 'test_' prefix and replace underscores with spaces
     clean_name = function_name.replace('test_', '').replace('_', ' ')
@@ -48,11 +48,13 @@ def _format_parametrized_test_name(function_name, callspec):
     if callspec and hasattr(callspec, 'params'):
         param_strs = []
         for key, value in callspec.params.items():
+            # Replace underscores with spaces in parameter names
+            clean_key = key.replace('_', ' ')
             # Handle string values by adding quotes for clarity
             if isinstance(value, str):
-                param_strs.append(f"{key}='{value}'")
+                param_strs.append(f"{clean_key}='{value}'")
             else:
-                param_strs.append(f"{key}={value}")
+                param_strs.append(f"{clean_key}={value}")
         
         if param_strs:
             return f"{clean_name} with {', '.join(param_strs)}"
