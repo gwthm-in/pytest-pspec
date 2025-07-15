@@ -30,6 +30,36 @@ def pytest_configure(config):
         config.pluginmanager.register(pspec_reporter, 'terminalreporter')
 
 
+def _format_parametrized_test_name(function_name, callspec):
+    """
+    Format a parametrized test name to be more readable.
+    
+    Args:
+        function_name: The original function name (e.g., 'test_math')
+        callspec: The pytest callspec object containing parameters
+        
+    Returns:
+        A formatted string like 'math with test_input=3 + 5, expected=8'
+    """
+    # Remove 'test_' prefix and replace underscores with spaces
+    clean_name = function_name.replace('test_', '').replace('_', ' ')
+    
+    # Format parameter values
+    if callspec and hasattr(callspec, 'params'):
+        param_strs = []
+        for key, value in callspec.params.items():
+            # Handle string values by adding quotes for clarity
+            if isinstance(value, str):
+                param_strs.append(f"{key}='{value}'")
+            else:
+                param_strs.append(f"{key}={value}")
+        
+        if param_strs:
+            return f"{clean_name} with {', '.join(param_strs)}"
+    
+    return clean_name
+
+
 def pytest_collection_modifyitems(config, items):
     if not config.option.pspec:
         return
@@ -38,10 +68,22 @@ def pytest_collection_modifyitems(config, items):
         node = item.obj
         parent = item.parent.obj
         node_parts = item.nodeid.split('::')
-        node_str = node.__doc__ or node_parts[-1]
-
-        if hasattr(item, "callspec"):
-            node_str = node_str.format(**item.callspec.params)
+        
+        # Check if this is a parametrized test
+        if hasattr(item, "callspec") and item.callspec:
+            # If there's a docstring, try to format it with parameters
+            if node.__doc__:
+                try:
+                    node_str = node.__doc__.format(**item.callspec.params)
+                except (KeyError, ValueError):
+                    # If formatting fails, fall back to better parametrized format
+                    node_str = _format_parametrized_test_name(node.__name__, item.callspec)
+            else:
+                # No docstring, use the improved parametrized format
+                node_str = _format_parametrized_test_name(node.__name__, item.callspec)
+        else:
+            # Regular test (not parametrized)
+            node_str = node.__doc__ or node_parts[-1]
 
         mode_str = node_parts[0]
         klas_str = ''
