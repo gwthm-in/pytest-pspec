@@ -20,7 +20,7 @@ def pytest_addoption(parser):
     )
 
 
-@pytest.mark.trylast
+@pytest.hookimpl(trylast=True)
 def pytest_configure(config):
     if config.option.pspec:
         # Get the standard terminal reporter plugin and replace it with ours
