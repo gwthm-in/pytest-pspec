@@ -100,3 +100,9 @@ Specifies pspec report format, ``plaintext`` or ``utf8`` (default:
     Pytest pspec
      [x] prints a BDD style output to your tests
      [x] lets you focus on the behavior
+
+Stargazers over time
+--------------------
+
+.. image:: https://starchart.cc/gwthm-in/pytest-pspec.svg?variant=adaptive
+    :target: https://travis-ci.org/gowtham-sai/pytest-pspec
