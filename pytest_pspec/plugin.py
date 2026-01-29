@@ -104,6 +104,9 @@ class PspecTerminalReporter(TerminalReporter):
     def __init__(self, config, file=None):
         TerminalReporter.__init__(self, config, file)
         self._last_header = None
+        self._last_file = None
+        self._tests_completed = 0
+        self._total_tests = 0
         self.pattern_config = models.PatternConfig(
             files=self.config.getini('python_files'),
             functions=self.config.getini('python_functions'),
@@ -116,6 +119,13 @@ class PspecTerminalReporter(TerminalReporter):
 
         if config.option.color != 'no':
             self.result_wrappers.append(wrappers.ColorWrapper)
+
+    def pytest_collection_finish(self, session):
+        """Called after collection is complete."""
+        self._total_tests = len(session.items)
+        # Call parent implementation if it exists
+        if hasattr(super(), 'pytest_collection_finish'):
+            super().pytest_collection_finish(session)
 
     def _register_stats(self, report):
         """
@@ -132,19 +142,42 @@ class PspecTerminalReporter(TerminalReporter):
         self.stats.setdefault(category, []).append(report)
         self._tests_ran = True
 
+    def _get_progress_string(self):
+        """Calculate and return progress percentage string."""
+        if self._total_tests > 0:
+            percentage = (self._tests_completed * 100) // self._total_tests
+            return f'[{percentage:3d}%]'
+        return ''
+
     def pytest_runtest_logreport(self, report):
         self._register_stats(report)
 
         if report.when != 'call' and not report.skipped:
             return
 
+        self._tests_completed += 1
+
+        # Update parent's progress tracking
+        if hasattr(self, '_progress_nodeids_reported'):
+            self._progress_nodeids_reported.add(report.nodeid)
+
         result = models.Result.create(report, self.pattern_config)
 
         for wrapper in self.result_wrappers:
             result = wrapper(result)
 
+        # Get current file from nodeid
+        current_file = report.nodeid.split('::')[0]
+
+        # Show progress when switching to a new file
+        if self._last_file is not None and current_file != self._last_file:
+            progress = self._get_progress_string()
+            if progress:
+                self._tw.line(f'{" " * 90}{progress}')
+
         if result.header != self._last_header:
             self._last_header = result.header
+            self._last_file = current_file
             self._tw.sep(' ')
             self._tw.line(result.header)
 
@@ -152,3 +185,4 @@ class PspecTerminalReporter(TerminalReporter):
             self._tw.line(unicode(result))
         except NameError:
             self._tw.line(str(result))
+
